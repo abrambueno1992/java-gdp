@@ -8,6 +8,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -56,7 +57,10 @@ public class GDPController {
         return totalGDP;
     }
 
-    @GetMapping("/total/{name}")
+//    @GetMapping("/total/{name}")
 
     @PostMapping("/gdp")
+    public List<GDP> newGDP(@RequestBody List<GDP> newGDPs) {
+        return gdprepos.saveAll(newGDPs);
+    }
 }
