@@ -6,10 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.Sort;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -57,7 +54,21 @@ public class GDPController {
         return totalGDP;
     }
 
-//    @GetMapping("/total/{name}")
+    @GetMapping("/total/{country}")
+    public GDP findOne(@PathVariable String country) {
+        for (GDP g : gdprepos.findAll()) {
+            System.out.println( (g.getCountry().toLowerCase() == country.toLowerCase()));
+//            log.info("Country: ",g.getCountry().toLowerCase(), country.toLowerCase());
+            if (g.getCountry().toLowerCase().equals(country.toLowerCase())) {
+                System.out.println("MATCH, MATCH");
+                return g;
+//                break;
+            }
+        }
+
+        return new GDP("NONE", 0L);
+//        GDP notFound = new GDPNotFoundException(0L);
+    }
 
     @PostMapping("/gdp")
     public List<GDP> newGDP(@RequestBody List<GDP> newGDPs) {
