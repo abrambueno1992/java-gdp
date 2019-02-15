@@ -22,4 +22,5 @@ public class GDP {
         this.country = country;
         this.gdp = gdp;
     }
+
 }

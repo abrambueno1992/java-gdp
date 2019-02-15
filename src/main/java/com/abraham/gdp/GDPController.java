@@ -5,10 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @Slf4j
@@ -24,13 +24,15 @@ public class GDPController {
     @GetMapping("/names")
     public List<GDP> allName() {
         // return in alphabetical order
-        return gdprepos.findAll(Sort.unsorted());
+        return gdprepos.findAll().stream().sorted((e1, e2) -> e1.getCountry().compareToIgnoreCase(e2.getCountry())).collect(Collectors.toList());
+//        return newList;
+
     }
 
     @GetMapping("/economy")
     public List<GDP> allGDP() {
         // order by gdp
-        return gdprepos.findAll(Sort.unsorted().ascending());
+        return gdprepos.findAll().stream().sorted((e1, e2) -> (e2.getGdp().compareTo(e1.getGdp()))).collect(Collectors.toList());
     }
 
     @GetMapping("/total")
@@ -58,16 +60,12 @@ public class GDPController {
     public GDP findOne(@PathVariable String country) {
         for (GDP g : gdprepos.findAll()) {
             System.out.println( (g.getCountry().toLowerCase() == country.toLowerCase()));
-//            log.info("Country: ",g.getCountry().toLowerCase(), country.toLowerCase());
             if (g.getCountry().toLowerCase().equals(country.toLowerCase())) {
-                System.out.println("MATCH, MATCH");
                 return g;
-//                break;
             }
         }
 
         return new GDP("NONE", 0L);
-//        GDP notFound = new GDPNotFoundException(0L);
     }
 
     @PostMapping("/gdp")
